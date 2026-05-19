@@ -220,3 +220,8 @@ __marimo__/
 # MySQL connector
 mysql-connector-j-9.7.0/
 mysql-connector-j-9.7.0.zip
+
+# CSV output files
+overdue_report.CSV
+
+.env
