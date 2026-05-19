@@ -1,13 +1,13 @@
 from sqlalchemy import create_engine, text
 import pandas as pd
 import datetime
-
+import os
 
 # Source database
-source_engine = create_engine("mysql+mysqlconnector://root:root123@172.18.240.1/library_db")
+source_engine = create_engine(f"mysql+mysqlconnector://root:{os.environ.get('DB_PASSWORD')}@172.18.240.1/library_db")
 
 # Destination database
-dest_engine = create_engine("mysql+mysqlconnector://root:root123@172.18.240.1/library_dw")
+dest_engine = create_engine(f"mysql+mysqlconnector://root:{os.environ.get('DB_PASSWORD')}@172.18.240.1/library_dw")
 
 print("Connected to both databases!")
 
