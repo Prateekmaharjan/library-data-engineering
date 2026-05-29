@@ -2,6 +2,8 @@ from sqlalchemy import create_engine, text
 import pandas as pd
 import datetime
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Source database
 source_engine = create_engine(f"mysql+mysqlconnector://root:{os.environ.get('DB_PASSWORD')}@172.18.240.1/library_db")

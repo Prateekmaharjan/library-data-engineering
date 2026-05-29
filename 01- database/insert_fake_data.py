@@ -14,12 +14,10 @@ connection = mysql.connector.connect(
 
 cursor = connection.cursor()
 
-# ============================================
 # INSERT FAKE AUTHORS
-# ============================================
 print("Inserting authors...")
 author_ids = []
-for _ in range(4):
+for _ in range(15):
     first_name = fake.first_name()
     last_name = fake.last_name()
     cursor.execute(
@@ -30,12 +28,10 @@ for _ in range(4):
 connection.commit()
 print(f"Inserted {len(author_ids)} authors")
 
-# ============================================
 # INSERT FAKE BOOKS
-# ============================================
 print("Inserting books...")
 book_ids = []
-for _ in range(4):
+for _ in range(20):
     title = fake.catch_phrase()
     isbn = fake.isbn13()
     published_year = random.randint(1950, 2023)
@@ -47,9 +43,7 @@ for _ in range(4):
 connection.commit()
 print(f"Inserted {len(book_ids)} books")
 
-# ============================================
 # INSERT BOOK_AUTHORS (junction table)
-# ============================================
 print("Inserting book_authors...")
 for book_id in book_ids:
     # Each book gets 1-2 random authors
@@ -63,9 +57,7 @@ for book_id in book_ids:
 connection.commit()
 print("Inserted book_authors")
 
-# ============================================
 # INSERT BOOK COPIES
-# ============================================
 print("Inserting book copies...")
 copy_ids = []
 for book_id in book_ids:
@@ -79,15 +71,13 @@ for book_id in book_ids:
 connection.commit()
 print(f"Inserted {len(copy_ids)} book copies")
 
-# ============================================
 # INSERT FAKE MEMBERS
-# ============================================
 print("Inserting members...")
 member_ids = []
-for _ in range(50):
+for _ in range(500):
     full_name = fake.name()
     email = fake.email()
-    phone = fake.numerify('98########')
+    phone = fake.numerify('00########')
     joined_date = fake.date_between(start_date=date(2023, 1, 1), end_date=date.today())
     cursor.execute(
         """INSERT INTO members (full_name, email, phone_number, joined_date) 
@@ -98,18 +88,16 @@ for _ in range(50):
 connection.commit()
 print(f"Inserted {len(member_ids)} members")
 
-# ============================================
 # INSERT BORROW RECORDS
-# ============================================
 print("Inserting borrow records...")
 borrow_count = 0
 for member_id in member_ids:
-    num_borrows = random.randint(2, 3)
+    num_borrows = random.randint(1, 3)
     for _ in range(num_borrows):
         copy_id = random.choice(copy_ids)
         borrowed_date = fake.date_between(
-            start_date=date(2024, 1, 1), 
-            end_date=date.today()
+            start_date=date(2025, 11, 1), 
+            end_date=date(2026, 4, 30)
         )
         due_date = borrowed_date + timedelta(days=14)
         
