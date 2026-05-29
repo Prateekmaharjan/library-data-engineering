@@ -25,13 +25,13 @@ jobs:
           pip install pandas sqlalchemy mysql-connector-python python-dotenv faker
 
       - name: Check etl_pipeline syntax
-        run: python -m py_compile 02-etl-pipeline/etl_pipeline.py && echo "etl_pipeline.py OK"
+        run: python -m py_compile "02- etl_pipeline/etl_pipeline.py" && echo "etl_pipeline.py OK"
 
       - name: Check etl_to_warehouse syntax
-        run: python -m py_compile 03-data-warehouse/etl_to_warehouse.py && echo "etl_to_warehouse.py OK"
+        run: python -m py_compile "03- data-warehouse/etl_to_warehouse.py" && echo "etl_to_warehouse.py OK"
 
       - name: Verify required files exist
         run: |
-          test -f 02-etl-pipeline/etl_pipeline.py && echo "etl_pipeline.py exists"
-          test -f 03-data-warehouse/etl_to_warehouse.py && echo "etl_to_warehouse.py exists"
+          test -f "02- etl_pipeline/etl_pipeline.py" && echo "etl_pipeline.py exists"
+          test -f "03- data-warehouse/etl_to_warehouse.py" && echo "etl_to_warehouse.py exists"
           test -f README.md && echo "README.md exists"
