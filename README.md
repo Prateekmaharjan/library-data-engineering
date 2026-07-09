@@ -2,7 +2,8 @@
 
 A complete data engineering project built on a Library Management System,
 demonstrating the full data pipeline from database design to automated
-ETL pipelines, analytical report generation, and data warehouse implementation.
+ETL pipelines, analytical report generation, data warehouse implementation,
+and medallion architecture using dbt.
 
 ---
 
@@ -12,9 +13,11 @@ ETL pipelines, analytical report generation, and data warehouse implementation.
 - **Languages:** Python 3, SQL
 - **Data Processing:** pandas, PySpark (Apache Spark 3.5.3)
 - **Pipeline Automation:** Apache Airflow
+- **Transformation Framework:** dbt Core 1.7 (with dbt-mysql adapter)
 - **Libraries:** SQLAlchemy, mysql-connector-python, Faker, python-dotenv
 - **Environment:** Linux (WSL), Windows
 - **Version Control:** Git
+- **CI/CD:** GitHub Actions
 
 ---
 
@@ -25,7 +28,8 @@ library-data-engineering/
 ├── 01-database/          # Operational database design
 ├── 02-etl-pipeline/      # ETL scripts and analytical reports
 ├── 03-data-warehouse/    # Star Schema warehouse and ETL
-└── 04-airflow/           # Automated pipeline DAG
+├── 04-airflow/           # Automated pipeline DAG
+└── dbt-medallion/        # dbt medallion architecture implementation
 ```
 
 ---
@@ -106,6 +110,55 @@ load_dim_date   ──┘
 
 ---
 
+## 05 — dbt Medallion Architecture
+
+Alternative warehouse implementation using dbt demonstrating medallion
+architecture (bronze → silver → gold) on the same library dataset.
+
+**Architecture:**
+```
+library_db (bronze — raw source)
+      ↓
+Staging models as views (silver — cleaned and standardized)
+      ↓
+Warehouse models as tables (gold — analytics ready)
+```
+
+**Silver Layer (views — no storage overhead):**
+- `stg_members` — cleaned member data with standardized column names
+- `stg_books` — books with author names concatenated using GROUP_CONCAT
+- `stg_borrow_records` — borrow records with calculated metrics (days_borrowed, is_returned, is_overdue)
+
+**Gold Layer (tables — stored in library_dw_dbt):**
+- `dim_member` — member dimension table
+- `dim_book` — book dimension with denormalized author data
+- `dim_date` — date dimension generated for 2024–2026
+- `fact_borrow` — fact table joining borrow records with book and date dimensions
+
+**Data Quality Tests (10 automated tests):**
+
+| Test | Column | Result |
+|------|--------|--------|
+| not_null | member_id | PASS |
+| unique | member_id | PASS |
+| not_null | member_name | PASS |
+| unique | email | PASS |
+| not_null | book_id | PASS |
+| unique | book_id | PASS |
+| not_null | title | PASS |
+| not_null | borrow_id | PASS |
+| unique | borrow_id | PASS |
+| not_null | member_id (borrow) | PASS |
+
+**Running dbt:**
+```bash
+cd dbt-medallion/library_dw
+dbt run      # builds all models
+dbt test     # runs all 10 data quality tests
+```
+
+---
+
 ## Setup
 
 ### Prerequisites
@@ -114,6 +167,7 @@ load_dim_date   ──┘
 - Apache Spark / PySpark (for PySpark analysis)
 - Apache Airflow (for pipeline automation)
 - Java 17 (for PySpark)
+- dbt Core with dbt-mysql adapter (for medallion architecture)
 
 ### Environment Variables
 Copy `.env.example` and fill in your values:
@@ -151,6 +205,14 @@ python pyspark_analysis.py
 airflow standalone
 ```
 
+### Running dbt Medallion Pipeline
+```bash
+pip install dbt-mysql
+cd dbt-medallion/library_dw
+dbt run
+dbt test
+```
+
 ---
 
 ## Key Features
@@ -161,5 +223,8 @@ airflow standalone
 - ✅ Snowflake Schema alternative design documented
 - ✅ PySpark analysis using both DataFrame API and Spark SQL
 - ✅ Apache Airflow DAG with 4 tasks, dependency ordering and retry logic
+- ✅ dbt medallion architecture — bronze, silver and gold layers
+- ✅ 10 automated dbt data quality tests — null checks and uniqueness constraints
 - ✅ SQL data validation — NULL checks, duplicate detection, logical date validation
 - ✅ Secure credential management using python-dotenv
+- ✅ CI/CD pipeline via GitHub Actions
