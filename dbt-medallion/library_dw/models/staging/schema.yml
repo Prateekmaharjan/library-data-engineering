@@ -1,0 +1,51 @@
+version: 2
+
+sources:
+  - name: library_db
+    database: library_db
+    schema: library_db
+    tables:
+      - name: members
+      - name: books
+      - name: borrow_records
+      - name: book_copies
+      - name: authors
+      - name: book_authors
+
+models:
+  - name: stg_members
+    description: "Cleaned and renamed members from source"
+    columns:
+      - name: member_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: member_name
+        tests:
+          - not_null
+      - name: email
+        tests:
+          - unique
+
+  - name: stg_books
+    description: "Cleaned books with author names"
+    columns:
+      - name: book_id
+        tests:
+          - unique
+          - not_null
+      - name: title
+        tests:
+          - not_null
+
+  - name: stg_borrow_records
+    description: "Cleaned borrow records with calculated metrics"
+    columns:
+      - name: borrow_id
+        tests:
+          - unique
+          - not_null
+      - name: member_id
+        tests:
+          - not_null
