@@ -1,9 +1,6 @@
-# Library Management System — Data Engineering Project
+# Library Management System — Data Analytics & Engineering Project
 
-A complete data engineering project built on a Library Management System,
-demonstrating the full data pipeline from database design to automated
-ETL pipelines, analytical report generation, data warehouse implementation,
-and medallion architecture using dbt.
+Analyzes library operations data to uncover borrowing trends, member activity patterns, and overdue risk — delivered through analytical reports and an interactive Tableau dashboard. Built on a full data pipeline covering database design, ETL, a Star Schema data warehouse, and dbt-based transformation and testing.
 
 ---
 
@@ -14,6 +11,7 @@ and medallion architecture using dbt.
 - **Data Processing:** pandas, PySpark (Apache Spark 3.5.3)
 - **Pipeline Automation:** Apache Airflow
 - **Transformation Framework:** dbt Core 1.7 (with dbt-mysql adapter)
+- **Visualization:** Tableau
 - **Libraries:** SQLAlchemy, mysql-connector-python, Faker, python-dotenv
 - **Environment:** Linux (WSL), Windows
 - **Version Control:** Git
@@ -23,14 +21,13 @@ and medallion architecture using dbt.
 
 ## Project Structure
 
-```
 library-data-engineering/
-├── 01-database/          # Operational database design
-├── 02-etl-pipeline/      # ETL scripts and analytical reports
-├── 03-data-warehouse/    # Star Schema warehouse and ETL
-├── 04-airflow/           # Automated pipeline DAG
-└── dbt-medallion/        # dbt medallion architecture implementation
-```
+├── 01-database/ # Operational database design
+├── 02-etl-pipeline/ # ETL scripts and analytical reports
+├── 03-data-warehouse/ # Star Schema warehouse and ETL
+├── 04-airflow/ # Automated pipeline DAG
+└── dbt-medallion/ # dbt medallion architecture implementation
+
 
 ---
 
@@ -51,7 +48,7 @@ Relational database schema for a library management system managing:
 
 ---
 
-## 02 — ETL Pipeline
+## 02 — ETL Pipeline & Analytical Reports
 
 Python ETL pipeline extracting, transforming and loading library data into
 3 purpose-built analytical reports covering 1000+ borrow records:
@@ -102,27 +99,28 @@ Apache Airflow DAG automating the full warehouse ETL pipeline:
 - 3 dimension tables load in parallel before fact table
 
 **Task execution order:**
-```
+
 load_dim_member ──┐
-load_dim_book   ──┼──→ load_fact_borrow
-load_dim_date   ──┘
-```
+load_dim_book ──┼──→ load_fact_borrow
+load_dim_date ──┘
+
 
 ---
 
 ## 05 — dbt Medallion Architecture
 
-Alternative warehouse implementation using dbt demonstrating medallion
-architecture (bronze → silver → gold) on the same library dataset.
+Alternative transformation approach using dbt, demonstrating medallion
+architecture (bronze → silver → gold) on the same library dataset,
+with automated data quality testing.
 
 **Architecture:**
-```
+
 library_db (bronze — raw source)
-      ↓
+↓
 Staging models as views (silver — cleaned and standardized)
-      ↓
+↓
 Warehouse models as tables (gold — analytics ready)
-```
+
 
 **Silver Layer (views — no storage overhead):**
 - `stg_members` — cleaned member data with standardized column names
@@ -171,10 +169,10 @@ dbt test     # runs all 10 data quality tests
 
 ### Environment Variables
 Copy `.env.example` and fill in your values:
-```
+
 DB_PASSWORD=your_mysql_password
 DB_HOST=localhost
-```
+
 
 ### Database Setup
 ```sql
@@ -217,14 +215,14 @@ dbt test
 
 ## Key Features
 
-- ✅ Normalized relational database with constraints, indexes and stored procedures
+- ✅ Interactive Tableau dashboard visualizing borrowing trends and member activity
 - ✅ Python ETL pipeline generating 3 analytical reports across 1000+ records
+- ✅ Normalized relational database with constraints, indexes and stored procedures
 - ✅ Star Schema data warehouse with fact and 3 dimension tables
 - ✅ Snowflake Schema alternative design documented
 - ✅ PySpark analysis using both DataFrame API and Spark SQL
 - ✅ Apache Airflow DAG with 4 tasks, dependency ordering and retry logic
-- ✅ dbt medallion architecture — bronze, silver and gold layers
-- ✅ 10 automated dbt data quality tests — null checks and uniqueness constraints
+- ✅ dbt medallion architecture — bronze, silver and gold layers with 10 automated data quality tests
 - ✅ SQL data validation — NULL checks, duplicate detection, logical date validation
 - ✅ Secure credential management using python-dotenv
 - ✅ CI/CD pipeline via GitHub Actions
